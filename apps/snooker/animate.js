@@ -196,10 +196,10 @@ function animate()
 
 	// check if we need to loop again if the ball comes to a stop
 	if(areBallsMoving()) {
-		console.log("loop again...");
+		//console.log("loop again...");
 		setTimeout(animate, 1000 / fps);
 	} else {
-		console.log("stop...");
+		//console.log("stop...");
 
 		for (i=0;i<ballArray.length;i++){
 			ballArray[i].vx = 0
@@ -219,10 +219,10 @@ function animate()
 function areBallsMoving() {
 
 	var result = false;
-
+	var stop = 0.5;
 	for (i=0;i<ballArray.length;i++){
-		result = result || (ballArray[i].vx > friction || ballArray[i].vx < -(friction)) || 
-		(ballArray[i].vy > friction || ballArray[i].vy < -(friction))
+		result = result || (ballArray[i].vx > stop || ballArray[i].vx < -(stop)) || 
+		(ballArray[i].vy > stop || ballArray[i].vy < -(stop))
 
 	}
 	console.log(result);
