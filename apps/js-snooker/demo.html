@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+		<title></title>
+
+		<meta name="description" content=" " />
+
+		<!--[if lt IE 8]>
+
+
+
+		<![endif]--> 
+
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+
+		<script type="text/javascript" src="ball_create.js"></script>
+
+		<script type="text/javascript" src="snooker.js"></script>
+
+		<script type="text/javascript" src="controls.js"></script>
+
+		<script type="text/javascript" src="animate.js"></script>
+
+		<script type="text/javascript" src="cue_control.js"></script>
+
+		<script type="text/javascript" src="excanvas.js"></script>
+
+	</head>
+
+	<body onkeydown="rotateCue(event)">
+
+			<div id="content">
+
+				<h1>2D GAME DEMO</h1>
+
+				<p>Here is the semi-completed version of the 2D mock-up game. You can move the cue around, change direction and even change the speed of your shot. I haven't set up the pockets or a scoring system yet. That will be done soon!</p>
+
+				
+
+				<img src="images/power9.jpg" alt="Shot Power Meter" title="Hit 1 - 9 on your keyboard for a different shot power" id="shotmeter">
+
+				<canvas id="canvas" width="400" height="500">
+
+					<p>Unfortunately your browser does not support the canvas element. Please upgrade to the latest versions of Firefox, Safari, Opera or Chrome</p>
+
+				</canvas>
+
+				<p>TODO: create hit points for the pockets and splice ball out of <code>ballArray[]</code> when they are sunk. This will involve changing the boundary detection so the balls only bounce of the bumpers.</p>
+
+				<p>TODO2: create scoring system with conditions of having to sink a red before being able to hit a colour without fouling (as per the rules of snooker).</p>
+
+			</div><!-- #content -->
+
+			<h3>Controls</h3>
+
+				<ul>
+
+					<li>a: move cue left</li>
+
+					<li>s: move cue down</li>
+
+					<li>d: move cue right</li>
+
+					<li>w: move cue up</li>
+
+					<li>o: rotate cue counter clockwise</li>
+
+					<li>p: rotate cue clockwise</li>
+
+					<li>x: hit white ball</li>
+
+				</ul>
+
+				<p>Hit 1 - 9 on your keyboard to select your shot power. (9 is default)</p>
+	</body>
+
+</html>
