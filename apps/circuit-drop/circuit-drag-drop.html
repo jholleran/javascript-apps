@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="script/utils.js"></script>
+	<script src="script/lib/angular.js"></script>
+	<script src="script/lvl-uuid.js"></script>
+	<script src="script/svg-drag-drop.js"></script>
+	
+	<style type="text/css">
+		.lvl-over {
+			/* applied to a drop target when a draggable object is over it */
+			stroke-width: 2;
+			stroke: #000;
+			fill: #ddd;
+			stroke-dasharray: 5,5;
+		}
+
+		.lvl-target {
+			/* applied to all drop targets when a drag operation begins, used to indicate drop targets on a page */
+			fill: #ddd;
+			
+		}
+
+		[draggable] {
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			-webkit-user-select: none;
+			user-select: none;
+			/* Required to make elements draggable in old WebKit */
+			-khtml-user-drag: element;
+			-webkit-user-drag: element;
+			cursor: move;
+			border:1px solid black;
+		}
+
+	html, body {
+		margin: 0px;
+	}
+	.draggable {
+        cursor: move;
+    }
+
+
+	</style>
+</head>
+	<body ng-app="ddApp">
+		<div ng-controller="ddController">
+		<svg id="circuitBoard" width="100%" height="100%" viewBox="0 0 800 800" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+			<filter id="dropshadow" width="200%" height="200%">
+			  	<feGaussianBlur in="SourceAlpha" stdDeviation="3"/> 
+			  <feOffset dx="5" dy="5"/>
+			  <feComponentTransfer>
+			    <feFuncA type="linear" slope="0.5"/>
+			  </feComponentTransfer>
+			  <feMerge> 
+			    <feMergeNode/>
+			    <feMergeNode in="SourceGraphic"/> 
+			  </feMerge>
+			 </filter>
+			<g transform="matrix(1 0 0 1 300 110)" filter="url(#dropshadow)">
+				<rect height="300" width="200" y="0" x="0" stroke-width="5" stroke="#000000" fill="#2196f3"/>
+				<rect height="100" width="180" y="20" x="10" stroke-width="5" stroke="#000000" fill="lightgray"/>
+				<text id="meter-display" x="148" y="100" text-anchor="end" style="font-size: 44px;">
+					0
+				</text>
+				<text id="meter-display" x="150" y="100" style="font-size: 30px;">
+				    &#8486;
+				</text>
+				<circle cx="100" cy="200" r="50" stroke="black" stroke-width="3" fill="black" />
+				<path fill="none" stroke="white" d="M 130 160 L 70 240" stroke-width="4" stroke-linecap="round" class="cl_wire"></path>
+
+				<circle cx="50" cy="260" r="12" stroke="red" stroke-width="3" fill="white" />
+				<circle cx="150" cy="260" r="12" stroke="black" stroke-width="3" fill="white" />
+				<path fill="none" stroke="red" d="M 50 260 L 50 320 L -20 320 L -20 190 L -60 190" stroke-width="6" stroke-linecap="round" class="cl_wire"></path>
+				<circle cx="50" cy="260" r="4" stroke="black" stroke-width="3" fill="red" />
+				<circle cx="-60" cy="190" r="4" stroke="black" stroke-width="3" fill="red" />
+				<path fill="none" stroke="#000000" d="M 150 260 L 150 350 L -60 350" stroke-width="6" stroke-linecap="round" class="cl_wire"></path>
+				<circle cx="150" cy="260" r="4" stroke="black" stroke-width="3" fill="black" />
+				<circle cx="-60" cy="350" r="4" stroke="black" stroke-width="3" fill="black" />
+			</g>
+
+			<g transform="matrix(1 0 0 1 100 100)">
+				<path fill="none" stroke="#000000" d="M 10 0 L 20 0 L 20 140 L 10 140 M -170 0 L -190 0 M -170 140 L -190 140 M -370 0 L -390 0 L -390 140 L -370 140" stroke-width="4" stroke-linecap="round" class="cl_wire" style="stroke-linecap: round;" transform="rotate(-90)"></path>
+				<circle cx="0" cy="0" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="0" cy="160" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="0" cy="200" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="0" cy="360" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="140" cy="0" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="140" cy="160" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="140" cy="200" r="8" stroke="black" stroke-width="3" fill="none" />
+				<circle cx="140" cy="360" r="8" stroke="black" stroke-width="3" fill="none" />
+			</g>
+			<text x="50" y="50" style="font-size: 50px;">
+				    Create a resistance of 320 &#8486;
+			</text>
+			<text id="result" x="50" y="550" style="font-size: 50px;">
+			</text>
+
+			<rect id="dropZone-1" x-svg-drop-target="true" height="100" width="38" y="130" x="80" fill="#fff"/>
+			<rect id="dropZone-2" x-svg-drop-target="true" height="100" width="38" y="330" x="80" fill="#fff"/>
+			<rect id="dropZone-3" x-svg-drop-target="true" height="100" width="38" y="130" x="220" fill="#fff"/>
+
+	
+			<g class="draggable" x-svg-drag="true" transform="matrix(1 0 0 1 50 600)" filter="url(#dropshadow)" data-res="100">
+			  <rect id="svg_1" height="100" width="38" y="50" x="2" stroke-width="2" stroke="#000000" fill="#ffb000"/>
+			  <line id="svg_2" y2="70" x2="40" y1="70" x1="2" stroke-width="5" stroke="#a52a2a" fill="none"/>
+			  <line id="svg_3" y2="80" x2="40" y1="80" x1="2" stroke-width="5" stroke="#000000" fill="none"/>
+			  <line id="topLead" y2="50" x2="20" y1="20" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
+			  <line id="bottomLead" y2="180" x2="20" y1="150" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
+			  <circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
+			  <circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
+			  <text x="5" y="110" style="font-size: 18px;">
+				    100
+			  </text>
+			  <text x="12" y="130" style="font-size: 18px;">
+				    &#8486
+			  </text>
+			 </g>
+
+		     <g class="draggable" x-svg-drag="true" transform="matrix(1 0 0 1 100 600)" filter="url(#dropshadow)" data-res="100">
+			  <rect id="svg_1" height="100" width="38" y="50" x="2" stroke-width="2" stroke="#000000" fill="#ffb000"/>
+			  <line id="svg_2" y2="70" x2="40" y1="70" x1="2" stroke-width="5" stroke="#a52a2a" fill="none"/>
+			  <line id="svg_3" y2="80" x2="40" y1="80" x1="2" stroke-width="5" stroke="#000000" fill="none"/>
+			  <line id="topLead" y2="50" x2="20" y1="20" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
+			  <line id="bottomLead" y2="180" x2="20" y1="150" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
+			  <circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
+			  <circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
+			  <text x="5" y="110" style="font-size: 18px;">
+				    100
+			  </text>
+			  <text x="12" y="130" style="font-size: 18px;">
+				    &#8486
+			  </text>
+			 </g>
+
+
+		     <g x-svg-draggable="true" x-svg-drag="true" transform="matrix(1 0 0 1 150 600)" filter="url(#dropshadow)" data-res="220">
+			  <rect id="svg_1" height="100" width="38" y="50" x="2" stroke-width="2" stroke="#000000" fill="#ffb000"/>
+			  <line id="svg_2" y2="70" x2="40" y1="70" x1="2" stroke-width="5" stroke="blue" fill="none"/>
+			  <line id="svg_3" y2="80" x2="40" y1="80" x1="2" stroke-width="5" stroke="yellow" fill="none"/>
+			  <line id="topLead" y2="50" x2="20" y1="20" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
+			  <line id="bottomLead" y2="180" x2="20" y1="150" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
+			  <circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
+			  <circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
+			  <text x="8" y="110" style="font-size: 18px;">
+				    220
+			  </text>
+			  <text x="12" y="130" style="font-size: 18px;">
+				    &#8486
+			  </text>
+			 </g>
+
+			 <g class="draggable" transform="matrix(1 0 0 1 200 600)" filter="url(#dropshadow)" data-res="0">
+			 	<rect height="200" width="42" y="0" x="0" stroke-width="5" fill="#00000" fill-opacity="0.0"/>
+				<path fill="none" stroke="#000000" d="M 20 20 L 20 180" stroke-width="4" stroke-linecap="round" class="cl_wire" style="stroke-linecap: round;"></path>
+				<circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
+				<circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
+			  </g>
+
+			  <g class="draggable" transform="matrix(1 0 0 1 250 600)" filter="url(#dropshadow)" data-res="0">
+			  	<rect height="200" width="42" y="0" x="0" stroke-width="5" fill="#00000" fill-opacity="0.0"/>
+				<path fill="none" stroke="#000000" d="M 20 20 L 20 180" stroke-width="4" stroke-linecap="round" class="cl_wire" style="stroke-linecap: round;"></path>
+				<circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
+				<circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
+			  </g>
+
+		</svg>
+
+		<div id="log" style="position: absolute; top: 800px; z-index: 4;"></div>
+		
+	</body>
+	
+	<script>
+		angular
+			.module('ddApp', ['lvl.directives.dragdrop']) // register the directive with your app module
+			.controller('ddController', ['$scope' , function($scope){ // function referenced by the drop target
+				$scope.dropped = function(dragEl, dropEl) {
+					//this is application logic, for the demo we just want to color the grid squares
+					//the directive provides a native dom object, wrap with jqlite
+					var drop = angular.element(dropEl);
+					var drag = angular.element(dragEl);
+				
+					//clear the previously applied color, if it exists
+					var bgClass = drop.attr('data-color');
+					if (bgClass) {
+						drop.removeClass(bgClass);
+					}
+
+					//add the dragged color
+					bgClass = drag.attr("data-color");
+					drop.addClass(bgClass);
+					drop.attr('data-color', bgClass);
+
+					//if element has been dragged from the grid, clear dragged color
+					if (drag.attr("x-lvl-drop-target")) {
+						drag.removeClass(bgClass);
+					}
+				}
+			}]);
+	</script>
+</html>
