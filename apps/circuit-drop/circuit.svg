@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet href="circuit.css" type="text/css"?>
 <svg id="circuitBoard" viewBox="0 0 800 800" preserveAspectRatio="xMinYMin meet"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<script type="text/javascript" xlink:href="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.8/interact.min.js"/>
+	<script type="text/javascript" xlink:href="interact.min.js"/>
 	<script type="text/javascript" xlink:href="circuit.js"/>
 	<defs>
     <g id="resistor" filter="url(#dropshadow)" data-res="220">
@@ -70,9 +70,9 @@
 	<text id="result" x="50" y="550" style="font-size: 50px;">
 	</text>
 
-	<rect id="dropZone-1" x-svg-drop-target="true" height="100" width="38" y="130" x="80" fill="#fff"/>
-	<rect id="dropZone-2" x-svg-drop-target="true" height="100" width="38" y="330" x="80" fill="#fff"/>
-	<rect id="dropZone-3" x-svg-drop-target="true" height="100" width="38" y="130" x="220" fill="#fff"/>
+	<rect id="dropZone-1" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="130" x="80" fill="#fff"/>
+	<rect id="dropZone-2" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="330" x="80" fill="#fff"/>
+	<rect id="dropZone-3" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="130" x="220" fill="#fff"/>
 
 
 	<g class="draggable" x-svg-drag="true" transform="matrix(1 0 0 1 50 600)" filter="url(#dropshadow)" data-res="100">

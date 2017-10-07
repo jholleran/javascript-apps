@@ -2,3 +2,7 @@
   display: block;
   margin: auto;
 }
+
+.drop-active {
+	fill: #c5c7d3;
+}

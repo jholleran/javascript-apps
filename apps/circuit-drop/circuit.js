@@ -4,42 +4,48 @@ document.addEventListener('DOMContentLoaded', function () {
     var sns="http://www.w3.org/2000/svg",
         xns="http://www.w3.org/1999/xlink",
         root = document.getElementById('circuitBoard'),
-        //star = document.getElementById('edit-star'),
+        dzs = document.getElementsByClassName('dropzone'),
         rootMatrix = root.getScreenCTM(),
+        dropzonePoints = [],
         originalPoints = [],
         transformedPoints = [];
 
-    // for (var i = 0, len = star.points.numberOfItems; i < len; i++) {
-    //     var handle = document.createElementNS(sns, 'use'),
-    //         point = star.points.getItem(i),
-    //         newPoint = root.createSVGPoint();
 
-    //     handle.setAttributeNS(xns, 'href', '#point-handle');
-    //     handle.setAttribute('class', 'point-handle');
+    for (var i = 0, len = dzs.length; i < len; i++) {
+        //var handle = document.createElementNS(sns, 'use'),
+            //point = star.points.getItem(i),
+        var dz = dzs[i],
+            newPoint = root.createSVGPoint();
 
-    //     handle.x.baseVal.value = newPoint.x = point.x;
-    //     handle.y.baseVal.value = newPoint.y = point.y;
+        // handle.setAttributeNS(xns, 'href', '#point-handle');
+        // handle.setAttribute('class', 'point-handle');
 
-    //     handle.setAttribute('data-index', i);
+        // handle.x.baseVal.value = newPoint.x = point.x;
+        // handle.y.baseVal.value = newPoint.y = point.y;
 
-    //     originalPoints.push(newPoint);
+        newPoint.x = dz.x.baseVal.value + (dz.width.baseVal.value / 2);
+        newPoint.y = dz.y.baseVal.value + (dz.height.baseVal.value / 2);
 
-    //     root.appendChild(handle);
-    // }
+        //handle.setAttribute('data-index', i);
+
+        dropzonePoints.push(newPoint);
+
+        //root.appendChild(handle);
+    }
 
     function applyTransforms (event) {
         // rootMatrix = root.getScreenCTM();
 
-        // transformedPoints = originalPoints.map(function(point) {
-        //     return point.matrixTransform(rootMatrix);
-        // });
+        transformedPoints = dropzonePoints.map(function(point) {
+            return point.matrixTransform(rootMatrix);
+        });
 
-        // interact('.point-handle').draggable({
-        //     snap: {
-        //         targets: transformedPoints,
-        //         range: 20 * Math.max(rootMatrix.a, rootMatrix.d)
-        //     }
-        // });
+        interact('.res-handle').draggable({
+            snap: {
+                targets: transformedPoints,
+                range: 50 * Math.max(rootMatrix.a, rootMatrix.d)
+            }
+        });
     }
 
     interact(root)
@@ -64,14 +70,51 @@ document.addEventListener('DOMContentLoaded', function () {
             onend: function (event) {
                 root.setAttribute('class', '');
             },
-            // snap: {
-            //     targets: originalPoints,
-            //     range: 10,
-            //     relativePoints: [ { x: 0.5, y: 0.5 } ]
-            // },
+            snap: {
+               targets: dropzonePoints,
+               range: 100,
+               relativePoints: [ { x: 0.5, y: 0.5 } ]
+            },
             restrict: { restriction: document.rootElement }
         })
         .styleCursor(false);
+
+        interact('.dropzone').dropzone({
+          // only accept elements matching this CSS selector
+          accept: '.res-handle',
+          // Require a 75% element overlap for a drop to be possible
+          overlap: 0.75,
+
+          // listen for drop related events:
+
+          ondropactivate: function (event) {
+            // add active dropzone feedback
+            event.target.classList.add('drop-active');
+          },
+          ondragenter: function (event) {
+            var draggableElement = event.relatedTarget,
+                dropzoneElement = event.target;
+
+            // feedback the possibility of a drop
+            dropzoneElement.classList.add('drop-target');
+            draggableElement.classList.add('can-drop');
+            draggableElement.textContent = 'Dragged in';
+          },
+          ondragleave: function (event) {
+            // remove the drop feedback style
+            event.target.classList.remove('drop-target');
+            event.relatedTarget.classList.remove('can-drop');
+            event.relatedTarget.textContent = 'Dragged out';
+          },
+          ondrop: function (event) {
+            event.relatedTarget.textContent = 'Dropped';
+          },
+          ondropdeactivate: function (event) {
+            // remove active dropzone feedback
+            event.target.classList.remove('drop-active');
+            event.target.classList.remove('drop-target');
+          }
+        });
 
 
     document.addEventListener('dragstart', function (event) {
