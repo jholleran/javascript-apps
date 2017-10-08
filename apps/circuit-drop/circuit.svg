@@ -19,6 +19,12 @@
 		    Ω
 	  </text>
 	 </g>
+	 <g id="link" filter="url(#dropshadow)" data-res="0">
+	  	<rect height="200" width="42" y="0" x="0" stroke-width="5" fill="#00000" fill-opacity="0.0"/>
+		<path fill="none" stroke="#000000" d="M 20 20 L 20 180" stroke-width="4" stroke-linecap="round" class="cl_wire" style="stroke-linecap: round;"></path>
+		<circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
+		<circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
+	  </g>
   </defs>
 	<filter id="dropshadow" width="200%" height="200%">
 	  	<feGaussianBlur in="SourceAlpha" stdDeviation="3"/> 
@@ -70,74 +76,14 @@
 	<text id="result" x="50" y="550" style="font-size: 50px;">
 	</text>
 
-	<rect id="dropZone-1" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="130" x="80" fill="#fff"/>
-	<rect id="dropZone-2" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="330" x="80" fill="#fff"/>
-	<rect id="dropZone-3" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="130" x="220" fill="#fff"/>
+	<rect id="dropZone-1" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="130" x="80" fill="#fff" data-zone="1"/>
+	<rect id="dropZone-2" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="330" x="80" fill="#fff" data-zone="2"/>
+	<rect id="dropZone-3" class="dropzone" x-svg-drop-target="true" height="100" width="42" y="130" x="220" fill="#fff" data-zone="3"/>
 
 
-	<g class="draggable" x-svg-drag="true" transform="matrix(1 0 0 1 50 600)" filter="url(#dropshadow)" data-res="100">
-	  <rect id="svg_1" height="100" width="38" y="50" x="2" stroke-width="2" stroke="#000000" fill="#ffb000"/>
-	  <line id="svg_2" y2="70" x2="40" y1="70" x1="2" stroke-width="5" stroke="#a52a2a" fill="none"/>
-	  <line id="svg_3" y2="80" x2="40" y1="80" x1="2" stroke-width="5" stroke="#000000" fill="none"/>
-	  <line id="topLead" y2="50" x2="20" y1="20" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
-	  <line id="bottomLead" y2="180" x2="20" y1="150" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
-	  <circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
-	  <circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
-	  <text x="5" y="110" style="font-size: 18px;">
-		    100
-	  </text>
-	  <text x="12" y="130" style="font-size: 18px;">
-		    Ω
-	  </text>
-	 </g>
-
-     <g class="draggable" x-svg-drag="true" transform="matrix(1 0 0 1 100 600)" filter="url(#dropshadow)" data-res="100">
-	  <rect id="svg_1" height="100" width="38" y="50" x="2" stroke-width="2" stroke="#000000" fill="#ffb000"/>
-	  <line id="svg_2" y2="70" x2="40" y1="70" x1="2" stroke-width="5" stroke="#a52a2a" fill="none"/>
-	  <line id="svg_3" y2="80" x2="40" y1="80" x1="2" stroke-width="5" stroke="#000000" fill="none"/>
-	  <line id="topLead" y2="50" x2="20" y1="20" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
-	  <line id="bottomLead" y2="180" x2="20" y1="150" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
-	  <circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
-	  <circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
-	  <text x="5" y="110" style="font-size: 18px;">
-		    100
-	  </text>
-	  <text x="12" y="130" style="font-size: 18px;">
-		    Ω
-	  </text>
-	 </g>
-
-
-     <g x-svg-draggable="true" x-svg-drag="true" transform="matrix(1 0 0 1 150 600)" filter="url(#dropshadow)" data-res="220">
-	  <rect id="svg_1" height="100" width="38" y="50" x="2" stroke-width="2" stroke="#000000" fill="#ffb000"/>
-	  <line id="svg_2" y2="70" x2="40" y1="70" x1="2" stroke-width="5" stroke="blue" fill="none"/>
-	  <line id="svg_3" y2="80" x2="40" y1="80" x1="2" stroke-width="5" stroke="yellow" fill="none"/>
-	  <line id="topLead" y2="50" x2="20" y1="20" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
-	  <line id="bottomLead" y2="180" x2="20" y1="150" x1="20" stroke-width="5" stroke="#000000" fill="none"/>
-	  <circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
-	  <circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
-	  <text x="8" y="110" style="font-size: 18px;">
-		    220
-	  </text>
-	  <text x="12" y="130" style="font-size: 18px;">
-		    Ω
-	  </text>
-	 </g>
-
-	 <g class="draggable" transform="matrix(1 0 0 1 200 600)" filter="url(#dropshadow)" data-res="0">
-	 	<rect height="200" width="42" y="0" x="0" stroke-width="5" fill="#00000" fill-opacity="0.0"/>
-		<path fill="none" stroke="#000000" d="M 20 20 L 20 180" stroke-width="4" stroke-linecap="round" class="cl_wire" style="stroke-linecap: round;"></path>
-		<circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
-		<circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
-	  </g>
-
-	  <g class="draggable" transform="matrix(1 0 0 1 250 600)" filter="url(#dropshadow)" data-res="0">
-	  	<rect height="200" width="42" y="0" x="0" stroke-width="5" fill="#00000" fill-opacity="0.0"/>
-		<path fill="none" stroke="#000000" d="M 20 20 L 20 180" stroke-width="4" stroke-linecap="round" class="cl_wire" style="stroke-linecap: round;"></path>
-		<circle cx="20" cy="20" r="4" stroke="black" stroke-width="3" fill="black" />
-		<circle cx="20" cy="180" r="4" stroke="black" stroke-width="3" fill="black" />
-	  </g>
-
-	  <use x="10" y="100" href="#resistor" class="res-handle" data-index="0"/>
-	  <use x="100" y="100" href="#resistor" class="res-handle" data-index="0"/>
+	<use x="50" y="600" href="#resistor" class="res-handle" data-res="100"/>
+	<use x="100" y="600" href="#resistor" class="res-handle" data-res="220"/>
+	<use x="150" y="600" href="#resistor" class="res-handle" data-res="360"/>
+	<use x="200" y="600" href="#link" class="res-handle" data-res="0"/>
+	<use x="250" y="600" href="#link" class="res-handle" data-res="0"/>
 </svg>

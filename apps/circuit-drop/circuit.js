@@ -1,3 +1,65 @@
+var Circuit = (function() {
+
+    var z1, z2, z3;
+
+
+    function meter() {
+        return document.getElementById("meter-display");
+    }
+
+    function levelComplete() {
+        var p = document.getElementById('result');
+        p.innerHTML = "Level 1 Complete. Well Done!";
+    }
+
+    function reset() {
+        meter().innerHTML = "0";
+        var p = document.getElementById('result');
+        p.innerHTML = "";
+    }
+
+    function check() {
+        if(z1 != undefined && z2 != undefined && z3 != undefined) {
+            var totalResistance = z1.r + z2.r + z3.r;
+            //alert(totalResistance);
+            meter().innerHTML = totalResistance;
+            // log(totalResistance);
+            if(totalResistance == 320) {
+                levelComplete();
+            }
+        } else {
+            reset();
+        }
+    }
+    
+    return {
+        connect: function(res, zone) {
+            //alert(res + ' connected in zone ' + zone);
+            if(zone === 1) { //TODO handle multiple zone dynamically
+                z1 = {r: res};
+            } else if(zone === 2) {
+                z2 = {r: res};
+            } else if(zone === 3) {
+                z3 = {r: res};
+            }
+            check();
+        },
+        disconnect: function(res, zone) {
+            //alert(res + ' disconnected from zone ' + zone);
+            if(zone === 1) {
+                z1 = undefined;
+            } else if(zone === 2) {
+                z2 = undefined;
+            } else if(zone === 3) {
+                z3 = undefined;
+            }
+            check();
+        },
+    }
+})();
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
@@ -72,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             snap: {
                targets: dropzonePoints,
-               range: 100,
+               range: 20,
                relativePoints: [ { x: 0.5, y: 0.5 } ]
             },
             restrict: { restriction: document.rootElement }
@@ -83,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
           // only accept elements matching this CSS selector
           accept: '.res-handle',
           // Require a 75% element overlap for a drop to be possible
-          overlap: 0.75,
+          overlap: 0.1,
 
           // listen for drop related events:
 
@@ -97,17 +159,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // feedback the possibility of a drop
             dropzoneElement.classList.add('drop-target');
-            draggableElement.classList.add('can-drop');
-            draggableElement.textContent = 'Dragged in';
+            // draggableElement.classList.add('can-drop');
+            // draggableElement.textContent = 'Dragged in';
           },
           ondragleave: function (event) {
             // remove the drop feedback style
-            event.target.classList.remove('drop-target');
-            event.relatedTarget.classList.remove('can-drop');
-            event.relatedTarget.textContent = 'Dragged out';
+            // event.target.classList.remove('drop-target');
+            // event.relatedTarget.classList.remove('can-drop');
+            // event.relatedTarget.textContent = 'Dragged out';
+
+            event.relatedTarget.classList.remove('connected');
+            Circuit.disconnect(parseInt(event.relatedTarget.getAttribute('data-res')), parseInt(event.target.getAttribute('data-zone')));
           },
           ondrop: function (event) {
-            event.relatedTarget.textContent = 'Dropped';
+            event.relatedTarget.classList.add('connected');
+            event.relatedTarget.classList.add('connected');
+            Circuit.connect(parseInt(event.relatedTarget.getAttribute('data-res')), parseInt(event.target.getAttribute('data-zone')));
           },
           ondropdeactivate: function (event) {
             // remove active dropzone feedback
