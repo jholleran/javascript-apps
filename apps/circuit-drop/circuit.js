@@ -34,7 +34,7 @@ var Circuit = (function() {
     
     return {
         connect: function(res, zone) {
-            //alert(res + ' connected in zone ' + zone);
+            console.log(res + ' connected in zone ' + zone);
             if(zone === 1) { //TODO handle multiple zone dynamically
                 z1 = {r: res};
             } else if(zone === 2) {
@@ -42,10 +42,10 @@ var Circuit = (function() {
             } else if(zone === 3) {
                 z3 = {r: res};
             }
-            check();
+            //check();
         },
         disconnect: function(res, zone) {
-            //alert(res + ' disconnected from zone ' + zone);
+            console.log(res + ' disconnected from zone ' + zone);
             if(zone === 1) {
                 z1 = undefined;
             } else if(zone === 2) {
@@ -53,8 +53,9 @@ var Circuit = (function() {
             } else if(zone === 3) {
                 z3 = undefined;
             }
-            check();
+            //check();
         },
+        check: check
     }
 })();
 
@@ -73,115 +74,188 @@ document.addEventListener('DOMContentLoaded', function () {
         transformedPoints = [];
 
 
-    for (var i = 0, len = dzs.length; i < len; i++) {
-        //var handle = document.createElementNS(sns, 'use'),
-            //point = star.points.getItem(i),
-        var dz = dzs[i],
-            newPoint = root.createSVGPoint();
 
-        // handle.setAttributeNS(xns, 'href', '#point-handle');
-        // handle.setAttribute('class', 'point-handle');
+interact('.res-handle')
+    .draggable({
+        onmove: function (event) {
+            var target = event.target,
+                x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx / rootMatrix.a,
+                y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy / rootMatrix.d;
 
-        // handle.x.baseVal.value = newPoint.x = point.x;
-        // handle.y.baseVal.value = newPoint.y = point.y;
+            target.style.webkitTransform =
+            target.style.transform =
+                'translate(' + x + 'px, ' + y + 'px)';
 
-        newPoint.x = dz.x.baseVal.value + (dz.width.baseVal.value / 2);
-        newPoint.y = dz.y.baseVal.value + (dz.height.baseVal.value / 2);
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+        },
+        onend: function (event) {
+            var textEl = event.target.querySelector('p');
+            
+            textEl && (textEl.textContent =
+                'moved a distance of '
+                + (Math.sqrt(event.dx * event.dx +
+                             event.dy * event.dy)|0) + 'px');
+        }
+    })
+    .inertia(true)
+    .restrict({
+        drag: "",
+        endOnly: true,
+        elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+    })
+    .snap({
+        mode: 'anchor',
+        anchors: [],
+        range: Infinity,
+        elementOrigin: { x: 0.5, y: 0.5 },
+        endOnly: true
+    })
+    .on('dragstart', function (event) {
+        var startX = parseFloat(event.target.getAttribute('data-sx'));
+        var startY = parseFloat(event.target.getAttribute('data-sy'));
+        if (!startX && !startY) {
+          var rect = interact.getElementRect(event.target);
 
-        //handle.setAttribute('data-index', i);
-
-        dropzonePoints.push(newPoint);
-
-        //root.appendChild(handle);
-    }
-
-    function applyTransforms (event) {
-        // rootMatrix = root.getScreenCTM();
-
-        transformedPoints = dropzonePoints.map(function(point) {
-            return point.matrixTransform(rootMatrix);
-        });
-
-        interact('.res-handle').draggable({
-            snap: {
-                targets: transformedPoints,
-                range: 50 * Math.max(rootMatrix.a, rootMatrix.d)
-            }
-        });
-    }
-
-    interact(root)
-        .on('mousedown', applyTransforms)
-        .on('touchstart', applyTransforms);
-
-    interact('.res-handle')
-        .draggable({
-            onstart: function (event) {
-                root.setAttribute('class', 'dragging');
-            },
-            onmove: function (event) {
-                var i = event.target.getAttribute('data-index')|0;
-                    //point = star.points.getItem(i);
-
-                // point.x += event.dx / rootMatrix.a;
-                // point.y += event.dy / rootMatrix.d;
-
-                event.target.x.baseVal.value += event.dx / rootMatrix.a;
-                event.target.y.baseVal.value += event.dy / rootMatrix.d;
-            },
-            onend: function (event) {
-                root.setAttribute('class', '');
-            },
-            snap: {
-               targets: dropzonePoints,
-               range: 20,
-               relativePoints: [ { x: 0.5, y: 0.5 } ]
-            },
-            restrict: { restriction: document.rootElement }
-        })
-        .styleCursor(false);
-
-        interact('.dropzone').dropzone({
-          // only accept elements matching this CSS selector
-          accept: '.res-handle',
-          // Require a 75% element overlap for a drop to be possible
-          overlap: 0.1,
-
-          // listen for drop related events:
-
-          ondropactivate: function (event) {
-            // add active dropzone feedback
-            event.target.classList.add('drop-active');
-          },
-          ondragenter: function (event) {
-            var draggableElement = event.relatedTarget,
-                dropzoneElement = event.target;
-
-            // feedback the possibility of a drop
-            dropzoneElement.classList.add('drop-target');
-            // draggableElement.classList.add('can-drop');
-            // draggableElement.textContent = 'Dragged in';
-          },
-          ondragleave: function (event) {
-            // remove the drop feedback style
-            // event.target.classList.remove('drop-target');
-            // event.relatedTarget.classList.remove('can-drop');
-            // event.relatedTarget.textContent = 'Dragged out';
-
-            event.relatedTarget.classList.remove('connected');
-            Circuit.disconnect(parseInt(event.relatedTarget.getAttribute('data-res')), parseInt(event.target.getAttribute('data-zone')));
-          },
-          ondrop: function (event) {
-            event.relatedTarget.classList.add('connected');
-            event.relatedTarget.classList.add('connected');
-            Circuit.connect(parseInt(event.relatedTarget.getAttribute('data-res')), parseInt(event.target.getAttribute('data-zone')));
-          },
-          ondropdeactivate: function (event) {
-            // remove active dropzone feedback
-            event.target.classList.remove('drop-active');
-            event.target.classList.remove('drop-target');
+          // record center point when starting the very first a drag
+          var startPos = {
+            x: rect.left + rect.width  / 2,
+            y: rect.top  + rect.height / 2
           }
+
+          startX = startPos.x;
+          startY = startPos.y;
+
+          event.target.setAttribute('data-sx', startPos.x);
+          event.target.setAttribute('data-sy', startPos.y);
+        }
+
+        var newStartPos = {
+            x: startX,
+            y: startY
+        }
+
+        // snap to the start position
+        event.interactable.snap({ anchors: [newStartPos] });
+    });
+
+
+interact('.dropzone')
+    // enable draggables to be dropped into this
+    .dropzone({ overlap: 'center' })
+    // only accept elements matching this CSS selector
+    .accept('.res-handle')
+    // listen for drop related events
+    .on('dragenter', function (event) {
+        if(event.target.classList.contains("drop-connected")) {
+            return; // Dont allow a snap
+        }
+        var dropRect = interact.getElementRect(event.target),
+            dropCenter = {
+              x: dropRect.left + dropRect.width  / 2,
+              y: dropRect.top  + dropRect.height / 2
+            };
+
+        event.draggable.snap({
+          anchors: [ dropCenter ]
         });
+
+        var draggableElement = event.relatedTarget,
+            dropzoneElement = event.target;
+
+        // feedback the possibility of a drop
+        dropzoneElement.classList.add('drop-target');
+        draggableElement.classList.add('can-drop');
+
+        Circuit.connect(parseInt(event.relatedTarget.getAttribute('data-res')), 
+            parseInt(event.target.getAttribute('data-zone')));
+    })
+    .on('dragleave', function (event) {
+        if(!event.relatedTarget.classList.contains("res-connected")) {
+            return; // Dont allow a snap
+        }
+        event.draggable.snap(false);
+
+        // when leaving a dropzone, snap to the start position
+
+        var startX = parseFloat(event.relatedTarget.getAttribute('data-sx'));
+        var startY = parseFloat(event.relatedTarget.getAttribute('data-sy'));
+        var newStartPos = {
+            x: startX,
+            y: startY
+        }
+        event.draggable.snap({ anchors: [newStartPos] });
+
+        // remove the drop feedback style
+        event.target.classList.remove('drop-target');
+        event.relatedTarget.classList.remove('can-drop');
+        event.target.classList.remove('drop-connected');
+        event.relatedTarget.classList.remove('res-connected');
+
+        Circuit.disconnect(parseInt(event.relatedTarget.getAttribute('data-res')), 
+            parseInt(event.target.getAttribute('data-zone')));
+        Circuit.check();
+    })
+    .on('dropactivate', function (event) {
+        if(event.target.classList.contains("drop-connected")) {
+            return; // Dont allow active
+        }
+        // add active dropzone feedback
+        event.target.classList.add('drop-active');
+    })
+    .on('dropdeactivate', function (event) {
+        // remove active dropzone feedback
+        event.target.classList.remove('drop-active');
+        event.target.classList.remove('drop-target');
+    })
+    .on('drop', function (event) {
+        //event.relatedTarget.textContent = '';
+        event.target.classList.add('drop-connected');
+        event.relatedTarget.classList.add('res-connected');
+        Circuit.check();
+    });
+
+        // interact('.dropzone').dropzone({
+        //   // only accept elements matching this CSS selector
+        //   accept: '.res-handle',
+        //   // Require a 75% element overlap for a drop to be possible
+        //   overlap: 0.1,
+
+        //   // listen for drop related events:
+
+        //   ondropactivate: function (event) {
+        //     // add active dropzone feedback
+        //     event.target.classList.add('drop-active');
+        //   },
+        //   ondragenter: function (event) {
+        //     var draggableElement = event.relatedTarget,
+        //         dropzoneElement = event.target;
+
+        //     // feedback the possibility of a drop
+        //     dropzoneElement.classList.add('drop-target');
+        //     // draggableElement.classList.add('can-drop');
+        //     // draggableElement.textContent = 'Dragged in';
+        //   },
+        //   ondragleave: function (event) {
+        //     // remove the drop feedback style
+        //     // event.target.classList.remove('drop-target');
+        //     // event.relatedTarget.classList.remove('can-drop');
+        //     // event.relatedTarget.textContent = 'Dragged out';
+
+        //     event.relatedTarget.classList.remove('connected');
+        //     Circuit.disconnect(parseInt(event.relatedTarget.getAttribute('data-res')), parseInt(event.target.getAttribute('data-zone')));
+        //   },
+        //   ondrop: function (event) {
+        //     event.relatedTarget.classList.add('connected');
+        //     event.relatedTarget.classList.add('connected');
+        //     Circuit.connect(parseInt(event.relatedTarget.getAttribute('data-res')), parseInt(event.target.getAttribute('data-zone')));
+        //   },
+        //   ondropdeactivate: function (event) {
+        //     // remove active dropzone feedback
+        //     event.target.classList.remove('drop-active');
+        //     event.target.classList.remove('drop-target');
+        //   }
+        // });
 
 
     document.addEventListener('dragstart', function (event) {
